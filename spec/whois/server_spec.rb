@@ -131,9 +131,15 @@ describe Whois::Server do
       end.should raise_error(Whois::ServerNotSupported, /email/)
     end
 
+    it "recognizes irr ids" do
+      s = Whois::Server.guess("asdadsads")
+      s.should be_a(Whois::Server::Adapters::Base)
+      s.type.should == :irr
+    end
+
     it "raises when unrecognized value" do
       lambda do
-        s = Whois::Server.guess("invalid")
+        s = Whois::Server.guess("inva.lid")
       end.should raise_error(Whois::ServerNotFound)
     end
 
@@ -214,6 +220,12 @@ describe Whois::Server do
             Whois::Server.guess("f53")
           }.should raise_error(Whois::AllocationUnknown)
         end
+      end
+    end
+
+    context "when the input is IRR id" do
+      it "returns a IRR adapter" do
+        Whois::Server.guess("sdfsdfsdfs").should == Whois::Server.factory(:irr, ".", "whois.radb.net")
       end
     end
 

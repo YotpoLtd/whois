@@ -32,6 +32,7 @@ module Whois
       autoload :Standard,         "whois/server/adapters/standard"
       autoload :Verisign,         "whois/server/adapters/verisign"
       autoload :Web,              "whois/server/adapters/web"
+      autoload :IRR,              "whois/server/adapters/irr"
     end
 
 
@@ -219,6 +220,11 @@ module Whois
         return server
       end
 
+      if matches_irr?(string)
+        return factory(:irr, ".", "whois.radb.net")
+      end
+
+
       # Gave Over
       raise ServerNotFound, "Unable to find a WHOIS server for `#{string}'"
     end
@@ -288,6 +294,10 @@ module Whois
       return true if /\A[\dA-Fa-f]{1,4}(:[\dA-Fa-f]{1,4})*::([\dA-Fa-f]{1,4}(:[\dA-Fa-f]{1,4})*:)?/ =~ addr && valid_ipv4?($')
       return true if /\A::([\dA-Fa-f]{1,4}(:[\dA-Fa-f]{1,4})*:)?/ =~ addr && valid_ipv4?($')
       false
+    end
+
+    def self.matches_irr?(string)
+      string =~ /^[\w!]*$/
     end
 
   end
